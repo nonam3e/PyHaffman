@@ -2,6 +2,7 @@ import utils
 import sys
 import pathlib
 
+
 def decompress():
     try:
         name = sys.argv[1]
@@ -13,9 +14,8 @@ def decompress():
         print("File hasn't been compressed yet")
         exit()
     content = raw.read()
-    utils.print_hashsum()
+    utils.print_hashsum(content)
 
 
 if __name__ == '__main__':
     decompress()
-
