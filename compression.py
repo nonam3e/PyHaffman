@@ -57,9 +57,6 @@ def compress():
     buffer = "0" * empty_bits
     for word in content:
         buffer += codes[chr(word)]
-        # while len(buffer) >= 8:
-        #     output.write((int(buffer[:8],2)))
-        #     buffer = buffer[8:]
     print(buffer)
     print(len(buffer))
     output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
