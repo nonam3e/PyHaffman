@@ -7,6 +7,30 @@ def print_hashsum(content):
     print(f'Checksum: {md5.hexdigest()}')
 
 
+def get_tree(prob_dict):
+    counter = sorted(prob_dict.items(), key=lambda x: x[1])
+    # print(counter)
+
+    nodes = []
+    for item in counter:
+        nodes.append(BinaryNode(content=item[0], prob=item[1]))
+
+    while len(nodes) > 1:
+        left = nodes[0]
+        right = nodes[1]
+        right.code = 0
+        left.code = 1
+        new_node = BinaryNode(prob=left.prob + right.prob, content=left.content + right.content, left=left, right=right)
+        nodes.remove(right)
+        nodes.remove(left)
+        nodes.append(new_node)
+        nodes = sorted(nodes, key=lambda x: x.prob)
+        # for node in nodes:
+        #     print(f"{node.content}:{node.prob}",end=' ')
+        # print("\n----")
+    return nodes[0]
+
+
 class BinaryNode:
     def __init__(self, prob, content, left=None, right=None):
         self.left = left
@@ -15,12 +39,12 @@ class BinaryNode:
         self.content = content
         self.code = ''
 
-    def get_codes(self,haffman_dict,code=''):
+    def get_codes(self, haffman_dict, code=''):
         current_code = code + str(self.code)
         if (self.left):
-            self.left.get_codes(haffman_dict,current_code)
+            self.left.get_codes(haffman_dict, current_code)
         if (self.right):
-            self.right.get_codes(haffman_dict,current_code)
+            self.right.get_codes(haffman_dict, current_code)
         if (not (self.left or self.right)):
             haffman_dict[self.content] = current_code
 
