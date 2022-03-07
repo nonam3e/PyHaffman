@@ -16,10 +16,10 @@ def compress():
     content = raw.read()
     counter = {}
     for letter in content:
-        if counter.get(chr(letter)) is None:
-            counter[chr(letter)] = 1
+        if counter.get(letter) is None:
+            counter[letter] = 1
         else:
-            counter[chr(letter)] += 1
+            counter[letter] += 1
 
     node = utils.get_tree(counter)
     codes = node.get_dict()
@@ -39,13 +39,13 @@ def compress():
 
     output.write(empty_bits.to_bytes(1, byteorder="big"))
     for key in counter:
-        output.write(key.encode())
+        output.write(key.to_bytes(1, byteorder="big"))
         output.write(counter[key].to_bytes(4, byteorder="big"))
     output.write(b'\x00')
 
     buffer = "0" * empty_bits
     for word in content:
-        buffer += codes[chr(word)]
+        buffer += codes[word]
         while len(buffer)>=8:
             output.write(int(buffer[7::-1], 2).to_bytes(1, byteorder='big'))
             buffer = buffer[8:]
