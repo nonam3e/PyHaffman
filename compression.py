@@ -40,25 +40,18 @@ def compress():
     output.write(empty_bits.to_bytes(1, byteorder="big"))
     for key in counter:
         output.write(key.encode())
-        a = counter[key]
-        counter_size = 0
-        while a > 0:
-            a //= 255
-            counter_size += 1
-        output.write(counter_size.to_bytes(1, byteorder="big"))
-        output.write(counter[key].to_bytes(counter_size, byteorder="big"))
+        output.write(counter[key].to_bytes(4, byteorder="big"))
     output.write(b'\x00')
 
     buffer = "0" * empty_bits
     for word in content:
         buffer += codes[chr(word)]
-        while len(buffer) >= 8:
+        while len(buffer)>=8:
             output.write(int(buffer[7::-1], 2).to_bytes(1, byteorder='big'))
             buffer = buffer[8:]
-
-    # print(buffer)
-    # print(len(buffer))
-    # output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
+    #print(buffer)
+    #print(len(buffer))
+    #output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
     raw.close()
     output.close()
 

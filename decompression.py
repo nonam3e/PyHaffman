@@ -23,10 +23,8 @@ def decompress():
         body_size -= 1
         if char == b'\x00':
             break
-        prob_size = int.from_bytes(raw.read(1), "big")
-        body_size -= 1
-        prob = int.from_bytes(raw.read(prob_size), "big")
-        body_size -= prob_size
+        prob = int.from_bytes(raw.read(4), "big")
+        body_size -= 4
         counter[char] = prob
     print(counter)
     node = utils.get_tree(counter)

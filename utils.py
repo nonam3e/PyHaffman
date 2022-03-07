@@ -17,7 +17,6 @@ def print_hashsum(content):
 
 def get_tree(prob_dict):
     counter = sorted(prob_dict.items(), key=lambda x: x[1])
-    # print(counter)
 
     nodes = []
     for item in counter:
