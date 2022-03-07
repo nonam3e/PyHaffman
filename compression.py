@@ -1,5 +1,4 @@
 import utils
-from utils import BinaryNode
 import sys
 import pathlib
 
@@ -36,20 +35,32 @@ def compress():
     empty_bits = (8 - compressed_size % 8) % 8
     print(empty_bits)
     utils.print_hashsum(content)
-    output = open(f"{pathlib.Path(name).stem}.bubylda", "wb")
+    output = open(f"{pathlib.Path(name)}.bubylda", "wb")
 
     output.write(empty_bits.to_bytes(1, byteorder="big"))
     for key in counter:
         output.write(key.encode())
-        output.write(counter[key].to_bytes(4, byteorder="big"))
-    output.write((0).to_bytes(1, byteorder="big"))
+        a = counter[key]
+        counter_size = 0
+        while a > 0:
+            a //= 255
+            counter_size += 1
+        output.write(counter_size.to_bytes(1, byteorder="big"))
+        output.write(counter[key].to_bytes(counter_size, byteorder="big"))
+    output.write(b'\x00')
 
     buffer = "0" * empty_bits
     for word in content:
         buffer += codes[chr(word)]
-    #print(buffer)
-    print(len(buffer))
-    output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
+        while len(buffer) >= 8:
+            output.write(int(buffer[7::-1], 2).to_bytes(1, byteorder='big'))
+            buffer = buffer[8:]
+
+    # print(buffer)
+    # print(len(buffer))
+    # output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
+    raw.close()
+    output.close()
 
 
 if __name__ == '__main__':
