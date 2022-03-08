@@ -22,6 +22,11 @@ def compress():
             counter[letter] += 1
 
     node = utils.get_tree(counter)
+    try:
+        if sys.argv[2] == "draw":
+            node.draw_tree()
+    except IndexError:
+        pass
     codes = node.get_dict()
 
     print(codes)

@@ -28,6 +28,11 @@ def decompress():
         counter[char] = prob
     print(counter)
     node = utils.get_tree(counter)
+    try:
+        if sys.argv[2] == "draw":
+            node.draw_tree()
+    except IndexError:
+        pass
     # utils.print_hashsum(content)
     print(empty_bits)
     print(f"body size: {body_size}")

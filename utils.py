@@ -1,5 +1,7 @@
 import hashlib
 import pathlib
+import networkx as nx
+import matplotlib.pyplot as plt
 
 
 def print_hashsum(content):
@@ -7,12 +9,12 @@ def print_hashsum(content):
         pathlib.Path(content).is_file()
         content = open(content, "rb").read()
     except TypeError:
-        pass
-    finally:
         if isinstance(content, bytes):
-            md5 = hashlib.md5()
-            md5.update(content)
-            print(f'Checksum: {md5.hexdigest()}')
+            pass
+    finally:
+        md5 = hashlib.md5()
+        md5.update(content)
+        print(f'Checksum: {md5.hexdigest()}')
 
 
 def get_tree(prob_dict):
@@ -59,3 +61,19 @@ class BinaryNode:
         haffman_dict = {}
         self.get_codes(haffman_dict)
         return haffman_dict
+
+    def dfs(self, G):
+        if self.left:
+            G.add_edge(f"{self.content}",
+                       f"{self.left.content}")
+            self.left.dfs(G)
+        if self.right:
+            G.add_edge(f"{self.content}",
+                       f"{self.right.content}")
+            self.right.dfs(G)
+
+    def draw_tree(self):
+        G = nx.Graph()
+        self.dfs(G)
+        nx.draw_kamada_kawai(G,with_labels=True)
+        plt.show()
