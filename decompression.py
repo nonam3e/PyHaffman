@@ -4,6 +4,8 @@ import pathlib
 
 
 def decompress():
+    raw = ''
+    name = ''
     try:
         name = sys.argv[1]
         raw = open(name, "rb")
@@ -28,11 +30,13 @@ def decompress():
         counter[char] = prob
     print(counter)
     node = utils.get_tree(counter)
+    draw = False
     try:
         if sys.argv[2] == "draw":
-            node.draw_tree()
+            draw = True
     except IndexError:
         pass
+    node.get_dict(draw)
     # utils.print_hashsum(content)
     print(empty_bits)
     print(f"body size: {body_size}")

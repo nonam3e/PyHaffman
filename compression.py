@@ -4,6 +4,8 @@ import pathlib
 
 
 def compress():
+    name = ''
+    raw = ''
     try:
         name = sys.argv[1]
         raw = open(name, "rb")
@@ -15,19 +17,21 @@ def compress():
         exit()
     content = raw.read()
     counter = {}
-    for letter in content:
+    for item in content:
+        letter = item.to_bytes(1, byteorder="big")
         if counter.get(letter) is None:
             counter[letter] = 1
         else:
             counter[letter] += 1
 
     node = utils.get_tree(counter)
+    draw = False
     try:
         if sys.argv[2] == "draw":
-            node.draw_tree()
+            draw = True
     except IndexError:
         pass
-    codes = node.get_dict()
+    codes = node.get_dict(draw)
 
     print(codes)
     print(counter)
@@ -44,19 +48,19 @@ def compress():
 
     output.write(empty_bits.to_bytes(1, byteorder="big"))
     for key in counter:
-        output.write(key.to_bytes(1, byteorder="big"))
+        output.write(key)
         output.write(counter[key].to_bytes(4, byteorder="big"))
     output.write(b'\x00')
 
     buffer = "0" * empty_bits
-    for word in content:
-        buffer += codes[word]
-        while len(buffer)>=8:
+    for letter in content:
+        buffer += codes[letter.to_bytes(1, byteorder="big")]
+        while len(buffer) >= 8:
             output.write(int(buffer[7::-1], 2).to_bytes(1, byteorder='big'))
             buffer = buffer[8:]
-    #print(buffer)
-    #print(len(buffer))
-    #output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
+    # print(buffer)
+    # print(len(buffer))
+    # output.write(int(buffer, 2).to_bytes(len(buffer) // 8, byteorder='big'))
     raw.close()
     output.close()
 
